@@ -1,17 +1,47 @@
 package org.example;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.sun.net.httpserver.HttpHandler;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
+    public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
+        //http client side
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("https://jsonplaceholder.typicode.com/users/1"))
+                .GET()
+                .build();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        //System.out.println(response.body());
+
+
+        //Parsing side
+
+        String json = response.body();
+
+
+        JsonElement jelement = JsonParser.parseString(json);
+        JsonObject jobject = jelement.getAsJsonObject();
+        String result = jobject.get("email").getAsString();
+        System.out.println(result);
+
+
+
+
+
+
+
+
         }
     }
-}
